@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HostelOne | Warden Portal</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <h2>Hostel<span>One</span></h2>
+    <p>NMIT CAMPUS</p>
+    <nav>
+      <button onclick="showPage('dashboard')">Dashboard</button>
+      <button onclick="showPage('hostel')">3D Hostel View</button>
+      <button onclick="showPage('students')">Students</button>
+      <button onclick="showPage('rooms')">Room Allocation</button>
+      <button onclick="showPage('attendance')">Attendance</button>
+      <button onclick="showPage('gate')">Gate Register</button>
+      <button onclick="showPage('complaints')">Complaints</button>
+      <button onclick="showPage('fees')">Fee Management</button>
+      <button onclick="showPage('reports')">Reports</button>
+      <button onclick="showPage('notifications')">Notifications</button>
+    </nav>
+    <div class="profile">Warden Kumar<br><small>Hostel Warden</small></div>
+  </aside>
+
+  <main>
+    <header>
+      <button class="menu" onclick="toggleSidebar()">☰</button>
+      <span>Workspace / <b id="pageName">Dashboard</b></span>
+      <span id="today"></span>
+    </header>
+
+    <section id="dashboard" class="page active">
+      <h1>Good evening, Warden Kumar!</h1>
+      <p>Here's what's happening across your hostel today.</p>
+
+      <div class="stats">
+        <article><p>Total Residents</p><h2 id="residentCount">8</h2></article>
+        <article><p>Bed Occupancy</p><h2>82%</h2></article>
+        <article><p>Present Today</p><h2 id="presentCount">6</h2></article>
+        <article><p>Open Complaints</p><h2 id="complaintCount">2</h2></article>
+      </div>
+
+      <div class="panel">
+        <h2>Hostel occupancy</h2>
+        <div class="progress"><span></span></div>
+        <p>248 occupied beds · 52 available beds (demo figures)</p>
+        <button onclick="showPage('hostel')">Explore 3D Hostel →</button>
+      </div>
+
+      <div class="panel">
+        <h2>Recent activity</h2>
+        <p>• Student attendance updated.</p>
+        <p>• A maintenance complaint was reported.</p>
+        <p>• Gate register is ready for review.</p>
+      </div>
+    </section>
+
+    <section id="hostel" class="page">
+      <h1>3D Hostel Explorer</h1>
+      <p>Select a hostel block and room to inspect its beds.</p>
+      <select id="blockSelect" onchange="renderRooms()">
+        <option value="A">Block A</option>
+        <option value="B">Block B</option>
+        <option value="C">Block C</option>
+      </select>
+      <div class="building">
+        <div class="building-label">NMIT HOSTEL</div>
+        <div class="building-grid" id="buildingGrid"></div>
+      </div>
+      <div class="legend">🟣 Occupied &nbsp; 🟢 Available &nbsp; 🟠 Maintenance</div>
+      <div id="roomDetails" class="panel">Select a room to view details.</div>
+    </section>
+
+    <section id="students" class="page">
+      <h1>Student Management</h1>
+      <div class="panel">
+        <input id="studentSearch" placeholder="Search students..." oninput="renderStudents()">
+        <button onclick="addStudent()">+ Add Student</button>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Name</th><th>Student ID</th><th>Block</th><th>Room</th><th>Phone</th></tr></thead>
+            <tbody id="studentTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="rooms" class="page">
+      <h1>Room & Bed Allocation</h1>
+      <div class="panel">
+        <p>Choose a room in the 3D Hostel View to inspect its beds.</p>
+        <button onclick="showPage('hostel')">Open Room Explorer</button>
+        <div id="allocationSummary"></div>
+      </div>
+    </section>
+
+    <section id="attendance" class="page">
+      <h1>Attendance Management</h1>
+      <div class="panel">
+        <input type="date" id="attendanceDate">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Student</th><th>Room</th><th>Present</th></tr></thead>
+            <tbody id="attendanceTable"></tbody>
+          </table>
+        </div>
+        <button onclick="saveAttendance()">Save Attendance</button>
+      </div>
+    </section>
+
+    <section id="gate" class="page">
+      <h1>Gate Register</h1>
+      <div class="panel">
+        <input id="gateName" placeholder="Student or visitor name">
+        <select id="gateType">
+          <option>Exit</option>
+          <option>Return</option>
+          <option>Visitor</option>
+        </select>
+        <input id="gatePurpose" placeholder="Purpose">
+        <button onclick="addGateEntry()">Add Entry</button>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Name</th><th>Type</th><th>Purpose</th><th>Time</th></tr></thead>
+            <tbody id="gateTable"></tbody>
+          </table>
+        </div>
+        <p class="notice">Demo only: this does not create secure QR passes or verify identities.</p>
+      </div>
+    </section>
+
+    <section id="complaints" class="page">
+      <h1>Complaints & Maintenance</h1>
+      <div class="panel">
+        <input id="issueTitle" placeholder="Complaint or maintenance issue">
+        <select id="issuePriority">
+          <option>Normal</option><option>High</option><option>Urgent</option>
+        </select>
+        <button onclick="addComplaint()">Report Issue</button>
+        <div id="issueList"></div>
+      </div>
+    </section>
+
+    <section id="fees" class="page">
+      <h1>Fee Management</h1>
+      <div class="panel">
+        <p>Record demonstration only. No real payments are processed.</p>
+        <input id="feeStudent" placeholder="Student name">
+        <input id="feeAmount" type="number" placeholder="Amount in ₹">
+        <select id="feeStatus"><option>Paid</option><option>Pending</option></select>
+        <button onclick="addFee()">Add Fee Record</button>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Student</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody id="feeTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="reports" class="page">
+      <h1>Reports & Analytics</h1>
+      <div class="stats">
+        <article><p>Total Students</p><h2 id="reportStudents">8</h2></article>
+        <article><p>Attendance Rate</p><h2 id="reportAttendance">75%</h2></article>
+        <article><p>Complaints</p><h2 id="reportComplaints">2</h2></article>
+      </div>
+      <div class="panel">
+        <button onclick="exportStudents()">Export Students as CSV</button>
+      </div>
+    </section>
+
+    <section id="notifications" class="page">
+      <h1>Notifications</h1>
+      <div class="panel" id="notificationList">
+        <p>Welcome to HostelOne.</p>
+        <p>Remember to review attendance and gate entries.</p>
+      </div>
+    </section>
+
+    <footer>HostelOne Warden Portal · Frontend demonstration</footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
